@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ลอยกระทงออนไลน์ – บางรักน้อย (ฟีดสาธารณะ)</title>
+  <meta name="description" content="ลอยกระทงดิจิทัล พร้อมฟีดสาธารณะและเคาน์เตอร์ผู้ร่วมลอย" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>html,body{font-family:'Sarabun',ui-sans-serif,system-ui}</style>
+</head>
+<body class="bg-[#0b1230] text-white">
+  <nav class="w-full bg-white/5 border-b border-white/10 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="./index.html" class="flex items-center gap-2 font-semibold">
+        <img src="assets/logo.png" alt="ตรา อบต.บางรักน้อย" class="w-7 h-7 object-contain rounded">
+        <span>ลอยกระทงออนไลน์</span>
+      </a>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="./index.html" class="hover:underline underline">หน้าหลัก</a>
+        <a href="./about.html" class="hover:underline">เกี่ยวกับงานประเพณี</a>
+      </div>
+    </div>
+  </nav>
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold">ลอยกระทงออนไลน์ (ฟีดสาธารณะ)</h1>
+    <p class="opacity-90 mt-2">เวอร์ชันพร้อม GitHub Pages + Google Apps Script</p>
+    <div class="grid lg:grid-cols-3 gap-6 mt-6">
+      <section class="lg:col-span-1 bg-white/5 rounded-2xl border border-white/10 p-5">
+        <form id="wishForm" class="space-y-3">
+          <div>
+            <label class="block text-sm opacity-90 mb-1">ชื่อ</label>
+            <input id="nameInput" class="w-full px-3 py-2 rounded bg-white/10 border border-white/20" required>
+          </div>
+          <div>
+            <label class="block text-sm opacity-90 mb-1">คำอธิษฐาน</label>
+            <textarea id="wishInput" rows="3" class="w-full px-3 py-2 rounded bg-white/10 border border-white/20" required></textarea>
+          </div>
+          <button class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400" type="submit">ลอยกระทง ✨</button>
+        </form>
+        <p class="text-xs opacity-70 mt-3">ข้อมูลเผยแพร่สู่ฟีดสาธารณะ โปรดใช้คำสุภาพ</p>
+      </section>
+      <section class="lg:col-span-2 space-y-4">
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-5">
+          <div class="flex items-center justify-between">
+            <h2 class="font-semibold">ฟีดคำอธิษฐานล่าสุด</h2>
+            <div class="text-right">
+              <div class="text-3xl font-bold" id="counter">0</div>
+              <div class="text-xs opacity-80 -mt-1">จำนวนผู้ร่วมลอย</div>
+            </div>
+          </div>
+          <ul id="feed" class="space-y-3 text-sm max-h-80 overflow-auto mt-3"></ul>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="max-w-6xl mx-auto px-4 pb-10 text-xs opacity-70">© 2568 อบต.บางรักน้อย</footer>
+  <script src="./config.js"></script>
+  <script>
+  const feed = document.getElementById('feed');
+  const counter = document.getElementById('counter');
+  const form = document.getElementById('wishForm');
+  const nameInput = document.getElementById('nameInput');
+  const wishInput = document.getElementById('wishInput');
+  const STORAGE_KEY = 'loykrathong_wishes_v1';
+
+  async function apiList(limit=50){
+    if(!window.API_URL || API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')){
+      const arr = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      return { ok:true, total: arr.length, items: arr.slice(-limit).reverse() };
+    }
+    const res = await fetch(API_URL + '?action=list&limit='+limit);
+    return await res.json();
+  }
+
+  async function apiSubmit(payload){
+    if(!window.API_URL || API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')){
+      const arr = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); arr.push(payload);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      return { ok:true, local:true };
+    }
+    const res = await fetch(API_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'create', data: payload })
+    });
+    return await res.json();
+  }
+
+  function renderFeed(items){
+    feed.innerHTML = '';
+    items.forEach(it=>{
+      const li = document.createElement('li');
+      const t = new Date(it.at || Date.now());
+      li.className = 'bg-black/20 border border-white/10 rounded-xl p-3';
+      li.innerHTML = '<div class="text-[13px]"><span class="font-semibold">'+(it.name||'ผู้ลอยนิรนาม')+'</span> • <span class="opacity-70">'+t.toLocaleString('th-TH')+'</span></div><div class="opacity-95 mt-1">'+(it.wish||'')+'</div>';
+      feed.appendChild(li);
+    });
+  }
+
+  async function refresh(){
+    const r = await apiList(60);
+    if(r && r.ok){
+      counter.textContent = r.total || 0;
+      renderFeed(r.items||[]);
+    }
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const entry = { name: nameInput.value.trim(), wish: wishInput.value.trim(), at: Date.now() };
+    if(!entry.name || !entry.wish){ alert('กรอกให้ครบก่อนนะครับ'); return; }
+    await apiSubmit(entry);
+    form.reset();
+    await refresh();
+  });
+
+  refresh();
+  </script>
+</body>
+</html>
