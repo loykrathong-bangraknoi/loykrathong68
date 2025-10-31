@@ -1,12 +1,16 @@
-# ลอยกระทงออนไลน์ – เวอร์ชัน Auto GitHub Pages
-- พร้อมไฟล์ Workflow สำหรับดีพลอยขึ้น **GitHub Pages** อัตโนมัติ
-- ต่อหลังบ้านได้ผ่าน **Google Apps Script** (บันทึกลง Google Sheet)
+# ลอยกระทงออนไลน์ PRO — บางรักน้อย 🌕🪷
 
-## ใช้งานด่วน
-1) ใส่ URL ของ Web App ใน `config.js`
-2) สร้าง Repository ใหม่บน GitHub แล้วอัปโหลดไฟล์ทั้งหมด
-3) เปิด **Settings → Pages → Build and deployment = GitHub Actions**
-4) Push/Upload ไปที่สาขา `main` → ระบบจะดีพลอยอัตโนมัติ
+ฟีเจอร์
+- 🌊 ฉาก Night Sky + แม่น้ำ (ใช้ภาพ bg.jpg ที่คุณส่งมา)
+- 🪷 เลือกแบบกระทง (krathong1–3.png ที่คุณส่งมา)
+- 🔗 ลิงก์สั้น `?id=<docId>` — ใช้งานได้จริงเมื่อเปิด Firebase (Local ทดสอบได้เฉพาะเครื่อง)
+- 📊 หน้า `stats.html` สรุปจำนวน, Top 5 คำอธิษฐาน, สไตล์ยอดนิยม
 
-## Backend
-เปิด https://script.google.com → New project → วางโค้ดจาก `backend/apps_script.gs` → Deploy as Web App
+## ใช้งานทันที (Local)
+เปิด `index.html` → พิมพ์คำอธิษฐาน → เลือกสไตล์ → “ลอยเลย!” → คัดลอกลิงก์สั้น (ใช้ดูในเครื่องนี้ได้)
+ดู `wishes.html` และ `stats.html` ได้เลย
+
+## เปิดใช้ Firebase
+แก้ `config.js` → `storageType: 'firebase'` และใส่คอนฟิก Firestore + Anonymous Auth
+
+— อัปเดต 2025-10-31 04:19

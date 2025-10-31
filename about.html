@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>เกี่ยวกับงานประเพณีลอยกระทง – บางรักน้อย</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกี่ยวกับงานประเพณีลอยกระทง</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>html,body{font-family:'Sarabun',ui-sans-serif,system-ui}</style>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="regions.js"></script>
+  <script defer src="fireworks.js"></script>
 </head>
-<body class="bg-[#0b1230] text-white">
-  <nav class="w-full bg-white/5 border-b border-white/10 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="./index.html" class="flex items-center gap-2 font-semibold">
-        <img src="assets/logo.png" alt="ตรา อบต.บางรักน้อย" class="w-7 h-7 object-contain rounded">
-        <span>ลอยกระทงออนไลน์</span>
-      </a>
-      <div class="flex items-center gap-4 text-sm">
-        <a href="./index.html" class="hover:underline">หน้าหลัก</a>
-        <a href="./about.html" class="hover:underline underline">เกี่ยวกับงานประเพณี</a>
+<body>
+  <div class="page-bg" aria-hidden="true"></div>
+  <div class="scene-background"></div>
+  <header class="site-header">
+    <div class="brand">
+      <img src="assets/logo.png" alt="ตรา/โลโก้หน่วยงาน" class="logo">
+      <div class="brand-text">
+        <h1>เกี่ยวกับงานประเพณี</h1>
+        <p>ลอยกระทง</p>
       </div>
     </div>
-  </nav>
-  <main class="max-w-6xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold">เกี่ยวกับงานประเพณีลอยกระทง – บางรักน้อย</h1>
-    <p class="opacity-90 mt-2">ประวัติ ความหมาย รักษ์โลก ความปลอดภัย และแนวทางเข้าร่วมออนไลน์</p>
+    <nav>
+      <a href="index.html">หน้าหลัก</a>
+      <a href="about.html">เกี่ยวกับงานประเพณี</a>
+      <a href="wishes.html">🪷 กระทงรวมใจ</a>
+      <a href="stats.html">📊 สถิติ</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>ความหมายและที่มา</h2>
+      <p>ลอยกระทงเป็นประเพณีไทยที่สืบทอดกันมายาวนาน เพื่อขอขมาต่อพระแม่คงคา และเฉลิมฉลองความงดงามของสายน้ำในคืนเพ็ญเดือนสิบสอง ผู้คนจะทำกระทงจากวัสดุธรรมชาติ ประดับดอกไม้ ธูป เทียน แล้วปล่อยให้ลอยไปตามลำน้ำพร้อมคำอธิษฐานอันเป็นสิริมงคล</p>
+      <h3>แนวคิดด้านสิ่งแวดล้อม</h3>
+      <p>ปัจจุบันมีการรณรงค์ใช้กระทงจากวัสดุย่อยสลายได้ ลดการใช้โฟม และดูแลความสะอาดของแหล่งน้ำ เพื่อสืบสานวัฒนธรรมอย่างยั่งยืน</p>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <small>© 2025 Bang Rak Noi SAO.</small>
+  </footer>
 </body>
 </html>

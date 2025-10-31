@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สถิติลอยกระทง</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="config.js"></script>
+  <script defer src="storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="regions.js"></script>
+  <script defer src="fireworks.js"></script>
+</head>
+<body>
+  <div class="page-bg" aria-hidden="true"></div>
+  <div class="scene-background"></div>
+  <header class="site-header">
+    <div class="brand">
+      <img src="assets/logo.png" alt="ตรา/โลโก้หน่วยงาน" class="logo">
+      <div class="brand-text">
+        <h1>📊 สถิติ</h1>
+        <p>ลอยกระทงออนไลน์</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">หน้าหลัก</a>
+      <a href="about.html">เกี่ยวกับงานประเพณี</a>
+      <a href="wishes.html">🪷 กระทงรวมใจ</a>
+      <a href="stats.html">📊 สถิติ</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>ภาพรวม</h2>
+      <div class="list">
+        <div class="card"><div>จำนวนกระทงทั้งหมด</div><h3 id="total">-</h3></div>
+        <div class="card"><div>สไตล์กระทงยอดนิยม</div><h3 id="popularStyle">-</h3></div>
+      </div>
+
+      <h3 style="margin-top:12px">Top 5 คำอธิษฐานยอดฮิต</h3>
+      <canvas id="topWishes" width="400" height="260"></canvas>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>© 2025 Bang Rak Noi SAO.</small>
+  </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const items = await window.Storage.getAllDetailed()
+  const totalEl = document.getElementById('total')
+  const popularEl = document.getElementById('popularStyle')
+  totalEl.textContent = items.length.toLocaleString('th-TH')
+
+  const styleCount = items.reduce((acc, it) => (acc[it.style||1]=(acc[it.style||1]||0)+1, acc), {})
+  const popularStyle = Object.entries(styleCount).sort((a,b)=>b[1]-a[1])[0]
+  popularEl.textContent = popularStyle ? ('แบบที่ ' + popularStyle[0] + ' ('+ popularStyle[1].toLocaleString('th-TH') +' ครั้ง)') : '-'
+
+  const map = new Map()
+  for (const it of items){
+    const key = (it.text || '').trim()
+    if (!key) continue
+    map.set(key, (map.get(key) || 0) + 1)
+  }
+  const top = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).slice(0,5)
+
+  const ctx = document.getElementById('topWishes').getContext('2d')
+  const labels = top.map(x=>x[0].slice(0,30) + (x[0].length>30?'…':''))
+  const data = top.map(x=>x[1])
+  new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'จำนวนครั้ง', data }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision:0 } } } }
+  })
+})
+</script>
+</body>
+</html>
