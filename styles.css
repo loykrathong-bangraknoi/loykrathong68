@@ -1,184 +1,43 @@
-/* styles.css */
-:root{
-  --line:#55aaff;
-  --text:#ffffff;
-  --card:#0a1433cc;
-}
-*{box-sizing:border-box} html,body{height:100%}
-body{
-  margin:0;
-  font-family:"Sarabun",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif;
-  color:var(--text);
-  background:#021024 url('assets/bg.jpg') center / cover no-repeat fixed;
-}
-body::before{
-  content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
-  background: radial-gradient(1200px 700px at 50% -200px, #00000040, #00000080 60%, #000000a0 100%);
-}
-.site-header{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 20px; border-bottom:1px solid #1f3b7c66; backdrop-filter: blur(6px);
-  position:sticky; top:0; background:#00051acc;
-}
-.brand{display:flex; align-items:center; gap:12px}
-.logo{width:56px; height:56px; object-fit:contain}
-.brand-text h1{margin:0; font-size:22px; font-weight:700}
-.brand-text p{margin:0; font-size:13px; opacity:.85}
-nav a{color:var(--text); text-decoration:none; margin-left:14px; font-weight:700}
-nav a:hover{text-decoration:underline}
-.container{max-width:980px; margin:0 auto; padding:18px}
-.hero{background:rgba(0,0,0,.30); border:1px solid #ffffff26; border-radius:16px; padding:18px; backdrop-filter: blur(4px);}
-.wish-form{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-.wish-form input{flex:1; padding:12px 14px; border-radius:12px; border:1px solid #4c73ff55; background:#0a1030cc; color:#fff; font-size:16px}
-.wish-form button{padding:12px 16px; border-radius:12px; border:0; background:#6aa7ff; color:#001; font-weight:800; cursor:pointer}
-.note{opacity:.9; font-size:13px}
 
-.river-wrap{ position:relative }
-#river{
-  position:relative; width:100%; height:460px; margin-top:18px;
-  background: linear-gradient(to bottom, #0a2a5acc, #021233cc);
-  border-top:3px solid var(--line); overflow:hidden; border-radius:12px; z-index:0;
-}
-.krathong{
-  position:absolute; bottom:0; text-align:center;
-  animation: floatX var(--duration,18s) linear forwards;
-  filter: drop-shadow(0 8px 14px rgba(0,0,0,.6));
-}
-.krathong img.emoji{ width:120px; height:auto; display:block; margin:0 auto }
-.krathong .text{font-size:14px; max-width:240px; padding:6px 8px; background:#00000066; border-radius:10px; margin-top:4px}
-@media (max-width:640px){ .krathong img.emoji{ width:90px } }
-
-@keyframes floatX{ from{ left:-140px } to{ left: calc(100% + 140px) } }
-
-.site-footer{ text-align:center; padding:30px 14px; opacity:.9 }
-
-.picker{display:flex; gap:10px; margin-top:8px; flex-wrap:wrap}
-.picker button{ background:#0a1030cc; border:1px solid #4c73ff55; border-radius:12px; padding:6px; cursor:pointer }
-.picker img{width:84px; height:60px; object-fit:contain; display:block}
-.picker .active{outline:3px solid #6aa7ff}
-
-.share{ margin-top:12px; background:#0a1030cc; border:1px solid #ffffff1f; border-radius:12px; padding:10px; display:none }
-.share .link{word-break:break-all; font-size:13px}
-.toast{ position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
-  background:#0a1030; color:#fff; border:1px solid #ffffff1f; padding:8px 12px; border-radius:10px; display:none }
-
-.list{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); margin-top:14px}
-.card{ background:var(--card); border:1px solid #ffffff26; border-radius:14px; padding:14px }
-.time{opacity:.85; font-size:12px}
-
-
-/* ===== Thai Regions Scene Background (parallax) ===== */
-.scene-background{
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 40%;
-  background-image: url('assets/bg-temple.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center bottom;
-  z-index: -3;
-  opacity: 0.92;
-  animation: sceneMove 80s linear infinite alternate;
-}
-@keyframes sceneMove{
-  0%{ background-position: center bottom; transform: scale(1); }
-  50%{ background-position: 48% bottom; transform: scale(1.03); }
-  100%{ background-position: center bottom; transform: scale(1); }
-}
-
-/* Region selector style */
-.region-label{ margin-right:6px; font-weight:700; color:#e9f0ff; }
-.region-select{
-  appearance: none; -webkit-appearance: none; -moz-appearance:none;
-  background:#0a1030cc; color:#fff; border:1px solid #ffffff33; border-radius:10px;
-  padding:6px 10px; margin-left:6px;
-}
-.region-select:focus{ outline:none; box-shadow:0 0 0 2px #3d5aeb88; }
-
-
-/* ===== Global page background (all pages) ===== */
-.page-bg{
-  position: fixed; inset: 0;
-  background: url('assets/bg-all.jpg') no-repeat center center / cover;
-  z-index: -5; pointer-events: none;
-  animation: slowPan 60s linear infinite alternate;
-}
-@keyframes slowPan { from { background-position: 52% 48%; } to { background-position: 48% 52%; } }
-
-/* ===== In-River Scene (index only) ===== */
-#river{ position: relative; overflow: hidden; }
-#river .scene-inriver{
-  position:absolute; inset:0;
-  background: url('assets/bg-inriver-2.png') no-repeat center bottom / cover;
-  z-index: -1; pointer-events: none; opacity: .98;
-  animation: scenePan 80s linear infinite alternate;
-  filter: saturate(1.05) brightness(1.02);
-}
-@keyframes scenePan{
-  0%{ background-position: 52% bottom; transform: scale(1); }
-  50%{ background-position: 48% bottom; transform: scale(1.02); }
-  100%{ background-position: 52% bottom; transform: scale(1); }
-}
-
-/* ===== Fireworks toggle style (if not present) ===== */
-.fx-toggle{
-  position: fixed; right: 16px; bottom: 64px; z-index: 51;
-  background:#0a1030cc; color:#fff; border:1px solid #ffffff33; border-radius: 999px;
-  padding: 10px 12px; cursor:pointer; font-weight:700; backdrop-filter: blur(6px);
-}
-.fx-toggle:hover{ filter: brightness(1.1) }
-
-
-/* === Twinkling lights & distance waves overlays === */
-/* Put subtle moving wave lines that get tighter toward the horizon
-   and twinkling dots like lanterns/city lights above the horizon.
-   These are purely visual overlays—no interaction. */
-
-#river{ position: relative; overflow: hidden; }
-
-/* Distance waves: subtle horizontal shimmering stripes */
-#river .scene-inriver::before{
-  content:"";
-  position:absolute; inset:0;
-  pointer-events:none; z-index:0;
-  background-image:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.06) 0px,
-      rgba(255,255,255,0.06) 2px,
-      rgba(255,255,255,0.00) 9px
-    );
-  mix-blend-mode: screen;
-  opacity:.35;
-  transform-origin:center bottom;
-  animation: waveWash 18s linear infinite;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.4) 35%, rgba(0,0,0,1) 85%);
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.4) 35%, rgba(0,0,0,1) 85%);
-}
-@keyframes waveWash{
-  0%   { background-position: 0px 0px; transform: scaleY(1); }
-  50%  { background-position: 0px -80px; transform: scaleY(1.05); }
-  100% { background-position: 0px -160px; transform: scaleY(1); }
-}
-
-/* Twinkling city/lantern lights */
-#river .scene-inriver::after{
-  content:"";
-  position:absolute; inset:0 0 40% 0; /* upper portion only */
-  pointer-events:none; z-index:0;
-  background:
-    radial-gradient(circle at 15% 30%, rgba(255,230,140,.75) 0px, rgba(255,230,140,.0) 40px),
-    radial-gradient(circle at 35% 22%, rgba(255,240,180,.65) 0px, rgba(255,240,180,.0) 36px),
-    radial-gradient(circle at 60% 27%, rgba(255,220,120,.7) 0px, rgba(255,220,120,.0) 42px),
-    radial-gradient(circle at 78% 18%, rgba(255,240,200,.6) 0px, rgba(255,240,200,.0) 34px),
-    radial-gradient(circle at 88% 32%, rgba(255,220,150,.6) 0px, rgba(255,220,150,.0) 28px);
-  filter: blur(0.6px);
-  mix-blend-mode: screen;
-  animation: twinkle 4.8s ease-in-out infinite;
-}
-@keyframes twinkle {
-  0%,100% { opacity: .35; transform: translateY(0) }
-  50%     { opacity: .8;  transform: translateY(-0.5px) }
-}
-
-/* Tweak reflection glow under krathong slightly for more realism */
-.krathong .kwrap::after{ opacity:.42; }
+@font-face{ font-family:'THSarabunNew'; src: local('Sarabun'), local('TH Sarabun New'); font-display:swap; }
+:root{--text:#e9f0ff;--bg:#050b1c;--card:#0a1430cc;--border:#2b3b6a66;--waterline:.62}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;color:var(--text);background:#000;font-family:'THSarabunNew','Prompt',system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.page-bg{position:fixed;inset:0;background:#000 url('assets/bg-all.jpg') center/cover no-repeat;z-index:-5;animation:slowPan 60s linear infinite alternate;filter:brightness(.9)}
+@keyframes slowPan{from{background-position:52% 48%}to{background-position:48% 52%}}
+.topbar{position:sticky;top:0;z-index:50;background:#020619cc;border-bottom:1px solid #ffffff16;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:14px}.logo{width:64px;height:64px;object-fit:contain}
+.title h1{margin:0;line-height:1.1;font-size:clamp(22px,3.2vw,28px);text-shadow:0 0 14px #7cc3ff80,0 0 30px #4dbaff40}
+.title small{display:block;font-size:clamp(16px,2.2vw,20px);font-weight:700;opacity:.95}
+.nav a{color:#cfe1ff;text-decoration:none;margin-left:14px}.nav a:hover{color:#fff}
+.container{max-width:1000px;margin:24px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 10px 30px #0006}
+.picker{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.wish{flex:1;min-width:240px;padding:12px 14px;border-radius:10px;border:1px solid #224;background:#030a24;color:#fff}
+.btn{padding:10px 14px;border-radius:999px;border:1px solid #224;background:linear-gradient(180deg,#5a8bff,#2248ff);color:#fff;font-weight:700}
+.btn.alt{background:linear-gradient(180deg,#ffe082,#ffb703);color:#111}.btn.danger{background:linear-gradient(180deg,#ff6b6b,#ef233c)}
+.krathong-choices{display:flex;gap:12px;flex-wrap:wrap;margin:.25rem 0 .5rem}
+.kbtn{background:#071234;border:1px solid #2a3e88;border-radius:16px;width:100px;height:100px;display:grid;place-items:center;font-size:0;cursor:pointer}
+.kbtn img{width:72px;height:72px;object-fit:contain}.kbtn.active{outline:3px solid #87cefa}
+#river{position:relative;margin:18px 0;height:clamp(340px,54vh,560px);border-radius:16px;border:1px solid var(--border);overflow:hidden;background:linear-gradient(180deg,#0b2a5acc,#061943ee 65%,#05102ccc);box-shadow:inset 0 0 60px #0006,0 20px 40px #0006}
+#river .scene-inriver{position:absolute;inset:0;background:url('assets/bg-inriver.png') center bottom/cover no-repeat;z-index:-1;opacity:.98;animation:scenePan 80s linear infinite alternate;filter:saturate(1.05) brightness(1.04)}
+@keyframes scenePan{0%{background-position:52% bottom}50%{background-position:48% bottom}100%{background-position:52% bottom}}
+.waterfx{position:absolute;inset:0;z-index:1;pointer-events:none}
+.waterfx::before,.waterfx::after{content:"";position:absolute;left:-10%;right:-10%;height:65%;bottom:-5%;background:radial-gradient(ellipse at 50% 10%,rgba(255,255,255,.16),rgba(255,255,255,0) 60%);mix-blend-mode:overlay;filter:blur(8px);opacity:.44;animation:wave1 24s ease-in-out infinite}
+.waterfx::after{height:70%;opacity:.32;filter:blur(12px);animation:wave2 32s ease-in-out infinite}
+@keyframes wave1{0%,100%{transform:translateX(-3%) translateY(0)}50%{transform:translateX(3%) translateY(-1.5%)}}
+@keyframes wave2{0%,100%{transform:translateX(3%)}50%{transform:translateX(-3%)}}
+#river .scene-inriver::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background-image:repeating-linear-gradient(to bottom,rgba(255,255,255,.07) 0px,rgba(255,255,255,.07) 2px,rgba(255,255,255,0) 9px);mix-blend-mode:screen;opacity:.35;animation:waveWash 18s linear infinite;-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,.4) 35%,rgba(0,0,0,1) 85%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,.4) 35%,rgba(0,0,0,1) 85%)}
+@keyframes waveWash{0%{background-position:0 0}50%{background-position:0 -80px}100%{background-position:0 -160px}}
+#river .scene-inriver .moon-glow{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(420px 260px at 50% 36%,rgba(255,245,180,.65),rgba(255,245,180,0) 60%),radial-gradient(600px 360px at 50% 36%,rgba(255,220,120,.25),rgba(255,220,120,0) 60%);mix-blend-mode:screen;animation:moonPulse 6s ease-in-out infinite}
+@keyframes moonPulse{0%,100%{opacity:.7}50%{opacity:.95}}
+.float-area{position:absolute;inset:0;z-index:2;overflow:hidden}
+.krathong{position:absolute;will-change:transform;animation:bob 3.6s ease-in-out infinite}
+.krathong img{display:block;height:clamp(70px,9.5vh,120px)}
+.krathong img.reflection{transform:scaleY(-1) translateY(6px);opacity:.5;filter:blur(1px);animation:refl 7s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes refl{0%,100%{opacity:.38}50%{opacity:.5}}
+.sharebox{display:flex;align-items:center;gap:10px;margin-top:12px}.note{opacity:.85}.foot{text-align:center;padding:24px;opacity:.7}
+.fx-toggle{position:fixed;right:16px;bottom:16px;z-index:10000;background:#0a1030cc;color:#fff;border:1px solid #ffffff33;border-radius:999px;padding:10px 12px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)}
+@media (prefers-color-scheme: light){:root{--text:#0f1a2f;--card:#ffffffcc;--border:#cfe0ff}body{background:#eaf2ff;color:var(--text)}.topbar{background:#ffffffcc;border-bottom:1px solid #d9e6ff}.nav a{color:#274b9c}#river{background:linear-gradient(180deg,#bfe3ffcc,#8fc3ffcc 65%,#6aa5ffcc);box-shadow:inset 0 0 40px #6aa5ff55,0 10px 30px #6aa5ff55}}
+:root[data-time-theme="evening"] .page-bg::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(1200px 500px at 60% 0%,#0db3a966,transparent 60%),radial-gradient(900px 400px at 10% 20%,#7ce2a933,transparent 60%),radial-gradient(900px 400px at 90% 30%,#00f5d433,transparent 60%);mix-blend-mode:screen}
+:root[data-time-theme="late"] .page-bg::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(1200px 500px at 60% 0%,#7a2bd066,transparent 60%),radial-gradient(900px 400px at 15% 25%,#ff79c633,transparent 60%),radial-gradient(900px 400px at 85% 30%,#9b5de533,transparent 60%);mix-blend-mode:screen}
+@media (max-width:480px){.logo{width:56px;height:56px}.kbtn{width:96px;height:96px}.kbtn img{width:68px;height:68px}:root{--waterline:.645}}
