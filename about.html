@@ -9,20 +9,6 @@
   <link rel="stylesheet" href="styles.css">
   <script defer src="regions.js"></script>
   <script defer src="fireworks.js"></script>
-<!-- Firebase v9 COMPAT for v8-style code -->
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
-<script src="config.js"></script>
-<script>
-  (function(){
-    try {
-      if (!window.firebase) { console.error('Firebase SDK not loaded'); return; }
-      if (!firebase.apps.length) firebase.initializeApp(window.AppConfig.firebase);
-      window._db = firebase.firestore();
-      console.log('[LIVE-PRODUCTION] Firestore ready');
-    } catch (e) { console.error('Firebase init error', e); }
-  })();
-</script>
 </head>
 <body>
   <div class="page-bg" aria-hidden="true"></div>
@@ -53,7 +39,7 @@
     </section>
   </main>
 
-  <footer  class="site-footer foot-center">
+  <footer class="site-footer">
     <small>© 2025 Bang Rak Noi SAO.</small>
   </footer>
 </body>
