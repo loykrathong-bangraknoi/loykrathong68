@@ -1,0 +1,13 @@
+/* share-icons.css — minimal, brand-flavored icon buttons */
+.sharebar{ display:flex; justify-content:center; gap:12px; margin-top:10px; }
+.sharebar button{ background:none; border:none; padding:0; cursor:pointer; transition:transform .18s ease; }
+.sharebar button:hover{ transform: scale(1.12); }
+.sharebar img, .sharebar svg{
+  width:40px; height:40px; border-radius:50%; display:block; padding:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,.28); background:#222;
+}
+.sharebar [data-app="facebook"] img, .sharebar [data-app="facebook"] svg{ background:#1877f2; }
+.sharebar [data-app="line"] img, .sharebar [data-app="line"] svg{ background:#06c755; }
+.sharebar [data-app="x"] img, .sharebar [data-app="x"] svg{ background:#000; }
+.sharebar [data-app="tiktok"] img, .sharebar [data-app="tiktok"] svg{ background:#000; }
+.sharebar [data-app="copy"] img, .sharebar [data-app="copy"] svg{ background:#555; }

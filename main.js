@@ -1,66 +1,152 @@
-
+// main.js — speed-tuned & resilient
 (function(){
-  const area=document.getElementById('floatArea');
-  const btn=document.getElementById('floatBtn');
-  const wishText=document.getElementById('wishText');
-  const bgm=document.getElementById('bgm'); const sfx=document.getElementById('sfxLaunch');
-  const muteBtn=document.getElementById('muteBtn');
-  let ktype='krathong1', muted=false;
+  function ready(fn){ document.readyState!=='loading' ? fn() : document.addEventListener('DOMContentLoaded', fn) }
+  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)) }
 
-  function ensureAudioStart(){ if(!bgm||bgm.dataset.started) return; bgm.volume=0.22; bgm.play().then(()=>bgm.dataset.started='1').catch(()=>{}); }
-  document.addEventListener('pointerdown', ensureAudioStart, {once:true});
+  // Time-of-day theme
+  (function(){ const h=new Date().getHours(), r=document.documentElement;
+    r.classList.remove('evening','late');
+    if(h>=18&&h<22) r.classList.add('evening'); else if(h>=22||h<2) r.classList.add('late');
+  })();
 
-  if(muteBtn&&bgm){
-    muteBtn.addEventListener('click', ()=>{
-      muted=!muted; bgm.muted=muted; if(sfx) sfx.muted=muted;
-      muteBtn.setAttribute('aria-pressed', String(!muted));
-      muteBtn.textContent = muted ? '🔇 ปิดเสียง' : '🔈 เสียง';
-      if(!muted) ensureAudioStart();
-    });
-  }
+  ready(function(){
+    const river = document.getElementById('river');
+    const btn   = document.getElementById('launchBtn');
+    const input = document.getElementById('wish');
+    const picker= document.getElementById('picker');
+    const shareBox = document.getElementById('shareBox');
+    const shareLinkEl = document.getElementById('shareLink');
+    const toastEl = document.getElementById('toast');
 
-  document.querySelectorAll('.kbtn').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      document.querySelectorAll('.kbtn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); ktype=b.dataset.type||'krathong1';
-    });
-  });
-
-  function addWish(text){
-    const arr=JSON.parse(localStorage.getItem('wishes')||'[]');
-    arr.push({text, time: Date.now(), type: ktype});
-    localStorage.setItem('wishes', JSON.stringify(arr));
-  }
-
-  function spawn(){
-    const river=document.getElementById('river');
-    const el=document.createElement('div'); el.className='krathong';
-    const src=`assets/${ktype}.png`; const img=new Image(); img.src=src; img.alt='กระทง';
-    const refl=new Image(); refl.src=src; refl.className='reflection';
-    el.appendChild(img); el.appendChild(refl); area.appendChild(el);
-
-    function position(){
-      const H=river.clientHeight;
-      const kh=img.naturalHeight||img.height||100;
-      const wl=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--waterline'))||0.62;
-      const waterline=H*wl; const bob=kh*0.58; const jitter=(H*0.06)*(Math.random()-0.5);
-      el.style.left='-120px'; el.style.top=(waterline-bob+jitter)+'px';
-      const total=area.clientWidth+300; const speed=44+Math.random()*22; let x=-130;
-      function step(){ x+=speed*0.016; el.style.transform=`translateX(${x}px)`; if(x<total) requestAnimationFrame(step); else el.remove(); }
-      requestAnimationFrame(step);
+    let styleId = 1;
+    if (picker){
+      picker.querySelectorAll('button').forEach(b=>{
+        b.addEventListener('click',()=>{
+          picker.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          styleId = Number(b.dataset.style||'1');
+        });
+      });
     }
-    if(img.complete) position(); else img.onload=position;
-    if(sfx && !muted){ try{ sfx.currentTime=0; sfx.play(); }catch(e){} }
-  }
 
-  if(btn){ btn.addEventListener('click', ()=>{ const text=(wishText.value||'').trim(); addWish(text); spawn(); wishText.value=''; }); }
+    function setToast(msg){
+      if(!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.style.display = 'block';
+      setTimeout(()=> toastEl.style.display='none', 1400);
+    }
+    function imgForStyle(id){ return 'assets/krathong'+id+'.png' }
 
-  const btnSave=document.getElementById('saveImageBtn'); const river=document.getElementById('river');
-  if(btnSave && window.html2canvas){
-    btnSave.addEventListener('click', async ()=>{
-      btnSave.disabled=true;
-      try{ const canvas=await html2canvas(river,{useCORS:true,backgroundColor:null,scale:2}); const a=document.createElement('a'); a.download='loy-krathong.png'; a.href=canvas.toDataURL('image/png'); a.click(); }catch(e){ alert('ไม่สามารถบันทึกรูปได้'); }
-      btnSave.disabled=false;
-    });
+    // Compute speed so it crosses in ~12–16s depending on screen
+    function computeSpeed(rw){
+      const isMobile = Math.max(window.innerWidth, window.innerHeight) < 820;
+      const target = isMobile ? 15.0 : 12.0; // seconds to cross
+      const travel = (rw||window.innerWidth) + 140 + 100; // river width + right margin + start offset
+      return clamp(travel / target, 26, 90); // px/sec
+    }
+
+    function renderKrathong(text, id){
+  if (!river) return;
+  const el = document.createElement('div');
+  el.className = 'krathong';
+  el.style.animation = 'none';
+  el.style.bottom = '0px';
+  el.style.left = '-60px'; // ⬅️ เริ่มใกล้จอมากขึ้น (ขึ้นไว)
+  el.innerHTML = '<img class="emoji" src="'+imgForStyle(id)+'" alt="krathong"><div class="text"></div>';
+  el.querySelector('.text').textContent = text;
+  river.appendChild(el);
+
+  // ค่าความเร็วใหม่ (ลอยช้า ๆ)
+  let last = 0, x = -60, t = 0;
+  const speed = 10;  // ⬅️ ลดความเร็วลง (ยิ่งน้อยยิ่งลอยช้า)
+  const amp = 6;     // แกว่งเบา ๆ เหมือนคลื่น
+  const maxLeft = (river.getBoundingClientRect().width || window.innerWidth) + 150;
+
+  function step(ts){
+    if (!last) last = ts;
+    const dt = Math.min(64, ts - last) / 1000;
+    last = ts;
+
+    x += speed * dt;
+    t += dt * 1.4;
+    const y = Math.sin(t) * amp;
+    el.style.transform = `translate3d(${x}px, ${-y}px, 0)`;
+    if (x < maxLeft) requestAnimationFrame(step);
+    else el.remove();
   }
+  requestAnimationFrame(step);
+}
+
+
+    function buildIdUrl(id){
+      const url=new URL(location.href); url.searchParams.clear(); url.searchParams.set('id', id); return url.toString();
+    }
+
+    async function launch(){
+      const text = ((input && input.value) ? input.value : 'สุขใจทุกคืนวันเพ็ญ 🌕').trim().slice(0,120);
+      if (input) input.value = '';
+      let id = '';
+      try{
+        if (window.Storage?.save){
+          const res = await window.Storage.save({ text, style: styleId });
+          id = (res && res.id) || '';
+        }else{
+          const lid = Math.random().toString(36).slice(2,8);
+          id = lid;
+          const key='loy-wishes', mapKey='loy-map';
+          const arr = JSON.parse(localStorage.getItem(key)||'[]');
+          const payload = { text, ts: Date.now(), style: styleId };
+          arr.push(payload); localStorage.setItem(key, JSON.stringify(arr));
+          const map = JSON.parse(localStorage.getItem(mapKey)||'{}'); map[lid]=payload; localStorage.setItem(mapKey, JSON.stringify(map));
+        }
+      }catch(e){}
+
+      renderKrathong(text, styleId);
+      if (shareBox && shareLinkEl){
+        const link = id ? buildIdUrl(id) : location.href;
+        shareLinkEl.textContent = link;
+        shareBox.style.display = 'block';
+      }
+    }
+
+    if (btn)   btn.addEventListener('click', launch);
+    if (input) input.addEventListener('keydown', e=>{ if(e.key==='Enter') launch() });
+
+    // Deep-link
+    const id = new URLSearchParams(location.search).get('id');
+    if (id && window.Storage?.getById){
+      window.Storage.getById(id).then(doc=>{
+        if(!doc) return;
+        styleId = Number(doc.style||1);
+        renderKrathong(String(doc.text||'').slice(0,120), styleId);
+        if (shareBox && shareLinkEl){
+          const link = buildIdUrl(id);
+          shareLinkEl.textContent = link;
+          shareBox.style.display = 'block';
+        }
+      });
+    }
+
+    // Sharebar
+    const sharebar = document.querySelector('.sharebar');
+    function fallbackShare(app, link, text){
+      const u=encodeURIComponent(link), t=encodeURIComponent(text);
+      if (app==='facebook') window.open('https://www.facebook.com/sharer/sharer.php?u='+u,'_blank','noopener');
+      if (app==='line')     window.open('https://line.me/R/msg/text/?'+t+'%20'+u,'_blank','noopener');
+      if (app==='x')        window.open('https://twitter.com/intent/tweet?text='+t+'&url='+u,'_blank','noopener');
+      if (app==='copy')     navigator.clipboard?.writeText(text+' '+link);
+      if (app==='tiktok')   navigator.clipboard?.writeText(text+' '+link);
+    }
+    if (sharebar){
+      sharebar.addEventListener('click', e=>{
+        const b=e.target.closest('button[data-app]'); if(!b) return;
+        const app=b.dataset.app;
+        const link=(document.getElementById('shareLink')?.textContent)||window.__SHARE_URL__||location.href;
+        const text=window.__SHARE_TEXT__||'มาร่วมลอยกระทงออนไลน์กันนะครับ 🌕';
+        if (navigator.share){
+          navigator.share({ title:'ลอยกระทงออนไลน์', text, url: link }).catch(()=>fallbackShare(app, link, text));
+        }else fallbackShare(app, link, text);
+      });
+    }
+  });
 })();

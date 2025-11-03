@@ -1,11 +1,12 @@
-// config.js
-// เลือกโหมดการเก็บข้อมูล: 'local' (ค่าเริ่มต้น) หรือ 'firebase'
+// LIVE-PRODUCTION-FINAL
 window.AppConfig = {
-  storageType: 'local',
+  storageType: 'firebase',
   firebase: {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    projectId: 'YOUR_PROJECT_ID',
-    appId: 'YOUR_APP_ID'
+    apiKey: "AIzaSyCDRWHl9MBNCwvAf845Tj4QRWhyNnHVoY0",
+    authDomain: "loykrathong-bangraknoi.firebaseapp.com",
+    projectId: "loykrathong-bangraknoi",
+    storageBucket: "loykrathong-bangraknoi.firebasestorage.app",
+    messagingSenderId: "878082035827",
+    appId: "1:878082035827:web:185f4e67b6fde8d36d9a06"
   }
-}
+};
